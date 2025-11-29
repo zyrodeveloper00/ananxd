@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <!doctype html>
 <html lang="tr">
 <head>
@@ -277,10 +276,10 @@
         document.getElementById('application-form').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            // ⚠️ DİKKAT: Vercel'e dağıtımdan sonra bu URL'i kendi Vercel projenizin URL'i ile DEĞİŞTİRMELİSİNİZ!
-            const VERCEL_BASE_URL = "https://maxlanddev.vercel.app";
-            // Örneğin: "https://discord-form-xyz.vercel.app"
-
+            // ⚠️ BURAYI KENDİ VERCEL CANLI URL'İNİZLE DEĞİŞTİRİN!
+            // Örnek: "https://ananxd-xyz.vercel.app"
+            const VERCEL_BASE_URL = "https://maxlanddev.vercel.app"; 
+            
             const submitBtn = document.getElementById('submit-btn');
             const submitBtnText = document.getElementById('submit-btn-text');
             const successMessage = document.getElementById('success-message');
@@ -311,7 +310,7 @@
             
             // Veriyi Vercel'deki sunucumuzun rotasına gönder
             try {
-                // Değiştirilen kısım: Localhost yerine VERCEL_BASE_URL kullanılıyor
+                // VERCEL_BASE_URL + /send-webhook rotası çağrılıyor
                 const response = await fetch(`${VERCEL_BASE_URL}/send-webhook`, {
                     method: 'POST',
                     headers: {
@@ -322,7 +321,8 @@
 
                 const data = await response.json();
                 
-                if (response.ok && data.success) { // response.ok kontrolü eklendi
+                // Başarılı veya hatalı sunucu yanıtını kontrol et
+                if (response.ok && data.success) {
                     webhookSent = true;
                 } else {
                     console.error("Sunucudan Hata Mesajı:", data.message || "Bilinmeyen sunucu hatası.");
@@ -330,6 +330,7 @@
 
             } catch (error) {
                 console.error("Fetch Hatası (Sunucuya ulaşılamadı):", error);
+                // Eğer hata alıyorsanız, VERCEL_BASE_URL değerini kontrol edin.
             }
             
             // Başarı veya Hata Mesajını Göster
@@ -344,7 +345,7 @@
             } else {
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'mb-6 p-4 rounded-xl glass-card border-2 border-red-400 success-popup';
-                errorDiv.innerHTML = '<p class="text-center font-semibold text-red-300 flex items-center justify-center gap-2"><span class="text-2xl">❌</span> Başvuru gönderilirken bir hata oluştu. Lütfen URL ayarını kontrol edin.</p>';
+                errorDiv.innerHTML = '<p class="text-center font-semibold text-red-300 flex items-center justify-center gap-2"><span class="text-2xl">❌</span> Başvuru gönderilirken bir hata oluştu. Lütfen konsolu kontrol edin ve Vercel URL\'ini kontrol edin.</p>';
                 submitBtn.parentNode.insertBefore(errorDiv, submitBtn.nextSibling);
                 
                 setTimeout(() => {
@@ -359,364 +360,4 @@
         createParticles();
     </script>
 </body>
-=======
-<!doctype html>
-<html lang="tr">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Discord Developer Başvuru Formu</title>
-  
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    /* Mevcut CSS Stilleriniz Korundu */
-    body {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
-    .animated-bg {
-      background: linear-gradient(-45deg, #000000, #1a1a2e, #16213e, #0f3460);
-      background-size: 400% 400%;
-      animation: gradientShift 15s ease infinite;
-    }
-    
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    
-    .floating-particles {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      overflow: hidden;
-    }
-    
-    .particle {
-      position: absolute;
-      border-radius: 50%;
-      animation: float 20s infinite;
-      opacity: 0.3;
-    }
-    
-    @keyframes float {
-      0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); }
-      25% { transform: translateY(-100px) translateX(50px) rotate(90deg); }
-      50% { transform: translateY(-200px) translateX(-50px) rotate(180deg); }
-      75% { transform: translateY(-100px) translateX(100px) rotate(270deg); }
-    }
-    
-    .glass-card {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    }
-    
-    .rainbow-text {
-      background: linear-gradient(90deg, #ff0080, #ff8c00, #40e0d0, #9d50bb, #ff0080);
-      background-size: 200% 200%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: rainbowFlow 3s linear infinite;
-    }
-    
-    @keyframes rainbowFlow {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 200% 50%; }
-    }
-    
-    .neon-input {
-      background: rgba(255, 255, 255, 0.03);
-      border: 2px solid rgba(255, 255, 255, 0.1);
-      color: #ffffff;
-      transition: all 0.3s ease;
-    }
-    
-    .neon-input:focus {
-      border-color: #40e0d0;
-      box-shadow: 0 0 20px rgba(64, 224, 208, 0.4);
-      background: rgba(255, 255, 255, 0.08);
-    }
-    
-    .neon-input::placeholder {
-      color: rgba(255, 255, 255, 0.3);
-    }
-    
-    .submit-btn {
-      background: linear-gradient(90deg, #ff0080, #ff8c00, #40e0d0);
-      background-size: 200% 200%;
-      animation: gradientSlide 3s ease infinite;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    @keyframes gradientSlide {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    
-    .submit-btn:hover:not(:disabled) {
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 10px 40px rgba(255, 0, 128, 0.5);
-    }
-    
-    .submit-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    
-    .glow-label {
-      color: #40e0d0;
-      text-shadow: 0 0 10px rgba(64, 224, 208, 0.5);
-    }
-    
-    .success-popup {
-      animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    }
-    
-    @keyframes popIn {
-      0% {
-        opacity: 0;
-        transform: scale(0.5) translateY(-50px);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
-    }
-    
-    .pulse-ring {
-      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    }
-    
-    @keyframes pulse {
-      0%, 100% {
-        opacity: 1;
-      }
-      50% {
-        opacity: 0.5;
-      }
-    }
-    
-    .form-section {
-      margin-bottom: 2rem;
-      padding: 1.5rem;
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 1rem;
-      border: 1px solid rgba(64, 224, 208, 0.2);
-    }
-  </style>
-  <style>@view-transition { navigation: auto; }</style>
- </head>
- <body class="w-full min-h-full animated-bg flex items-center justify-center p-6">
-  <div class="floating-particles" id="particles"></div>
-  <main class="w-full max-w-4xl relative z-10">
-   <div class="glass-card rounded-3xl p-8 shadow-2xl">
-    <header class="text-center mb-8">
-     <h1 id="form-title" class="text-5xl font-bold mb-3 rainbow-text">Discord Developer Alımı</h1>
-     <p id="form-subtitle" class="text-xl text-gray-300">Minecraft sunucumuz için yetenekli geliştiriciler arıyoruz!</p>
-    </header>
-    <div id="success-message" class="hidden success-popup mb-6 p-4 rounded-xl glass-card border-2 border-green-400">
-     <p class="text-center font-semibold text-green-300 flex items-center justify-center gap-2"><span class="text-2xl">✅</span> Başvurunuz başarıyla gönderildi! En kısa sürede sizinle iletişime geçeceğiz.</p>
-    </div>
-    
-<form id="application-form" class="space-y-6">
-  <div class="form-section">
-    <h2 class="text-2xl font-bold mb-4 rainbow-text flex items-center gap-3">
-      <span> Kişisel Bilgiler</span> 
-    </h2>
-    <div class="space-y-4">
-      <div>
-        <label for="ad" class="block text-sm font-semibold mb-2 glow-label">Adınız *</label> 
-        <input type="text" id="ad" name="ad" required class="neon-input w-full px-4 py-3 rounded-lg focus:outline-none" placeholder="Adınızı girin">
-      </div>
-      <div>
-        <label for="yas" class="block text-sm font-semibold mb-2 glow-label">Yaşınız *</label> 
-        <input type="number" id="yas" name="yas" required min="13" max="100" class="neon-input w-full px-4 py-3 rounded-lg focus:outline-none" placeholder="18">
-      </div>
-      <div>
-        <label for="eposta" class="block text-sm font-semibold mb-2 glow-label">E-posta Adresiniz *</label> 
-        <input type="email" id="eposta" name="eposta" required class="neon-input w-full px-4 py-3 rounded-lg focus:outline-none" placeholder="ornek@email.com">
-      </div>
-    </div>
-  </div>
-
-  <div class="form-section">
-    <h2 class="text-2xl font-bold mb-4 rainbow-text flex items-center gap-3">
-      <span> Minecraft &amp; Kodlama Deneyimi</span>
-    </h2>
-    <div class="space-y-4">
-      <div>
-        <label for="minecraft-deneyim" class="block text-sm font-semibold mb-2 glow-label">Minecraft'da Deneyimleriniz Nedir? *</label> 
-        <textarea id="minecraft-deneyim" name="minecraft_deneyim" required rows="4" class="neon-input w-full px-4 py-3 rounded-lg focus:outline-none resize-none" placeholder="Minecraft'ta ne kadar süredir oynuyorsunuz? Hangi alanlarda deneyiminiz var?"></textarea>
-      </div>
-      <div>
-        <label for="kodlama-bilgisi" class="block text-sm font-semibold mb-2 glow-label">Minecraft İle Kodlama / Yazılım Bilginiz Nedir? *</label> 
-        <textarea id="kodlama-bilgisi" name="kodlama_bilgisi" required rows="4" class="neon-input w-full px-4 py-3 rounded-lg focus:outline-none resize-none" placeholder="Hangi dilleri biliyorsunuz? (Java, Python, JavaScript vb.) Plugin/Mod geliştirme deneyiminiz var mı?"></textarea>
-      </div>
-    </div>
-  </div>
-
-  <div class="form-section">
-    <h2 class="text-2xl font-bold mb-4 rainbow-text flex items-center gap-3">
-      <span>Geçmiş Deneyim &amp; Projeler</span>
-    </h2>
-    <div class="space-y-4">
-      <div>
-        <label for="onceki-sunucular" class="block text-sm font-semibold mb-2 glow-label">Daha Önce Hangi Sunucularda Developerlik Yaptınız? *</label> 
-        <textarea id="onceki-sunucular" name="onceki_sunucular" required rows="3" class="neon-input w-full px-4 py-3 rounded-lg focus:outline-none resize-none" placeholder="Çalıştığınız sunucuların isimlerini ve ne kadar süre çalıştığınızı yazın"></textarea>
-      </div>
-      <div>
-        <label for="aktif-sunucu" class="block text-sm font-semibold mb-2 glow-label">Aktif Bir Developerlik Yaptığınız Sunucu Var mı? Varsa Neresi? *</label> 
-        <textarea id="aktif-sunucu" name="aktif_sunucu" required rows="3" class="neon-input w-full px-4 py-3 rounded-lg focus:outline-none resize-none" placeholder="Şu anda çalıştığınız bir sunucu varsa yazın, yoksa 'Hayır' yazın"></textarea>
-      </div>
-      <div>
-        <label for="proje-ornekleri" class="block text-sm font-semibold mb-2 glow-label">Projelerinizin Örneği Var mı? Varsa Örnekleri Nelerdir? *</label> 
-        <textarea id="proje-ornekleri" name="proje_ornekleri" required rows="5" class="neon-input w-full px-4 py-3 rounded-lg focus:outline-none resize-none" placeholder="Geliştirdiğiniz plugin'leri, modları veya sistemleri detaylıca anlatın. GitHub linkleri ekleyebilirsiniz."></textarea>
-      </div>
-    </div>
-  </div>
-
-  <div class="form-section">
-    <h2 class="text-2xl font-bold mb-4 rainbow-text flex items-center gap-3">
-      <span> Uygunluk &amp; Yetenek</span>
-    </h2>
-    <div class="space-y-4">
-      <div>
-        <label for="aktif-gunler" class="block text-sm font-semibold mb-2 glow-label">Hangi Günler Aktif Olabilirsiniz? *</label> 
-        <input type="text" id="aktif-gunler" name="aktif_gunler" required class="neon-input w-full px-4 py-3 rounded-lg focus:outline-none" placeholder="Örnek: Pazartesi-Cuma akşamları, Hafta sonu tüm gün">
-      </div>
-      <div>
-        <label for="neden-iyi-developer" class="block text-sm font-semibold mb-2 glow-label">Bize İyi Bir Developerlik Yapar mısınız? Neden? *</label> 
-        <textarea id="neden-iyi-developer" name="neden_iyi_developer" required rows="5" class="neon-input w-full px-4 py-3 rounded-lg focus:outline-none resize-none" placeholder="Güçlü yönlerinizi, öğrenme hızınızı, takım çalışması becerilerinizi ve neden sizi seçmemiz gerektiğini anlatın"></textarea>
-      </div>
-    </div>
-  </div>
-
-  <button type="submit" id="submit-btn" class="submit-btn w-full py-5 rounded-xl font-bold text-xl text-white relative"> 
-    <span id="submit-btn-text" class="relative z-10">Başvurumu Gönder</span> 
-  </button>
-</form>
-
-    <footer class="mt-6 text-center text-sm text-gray-400">
-     <p class="pulse-ring">* ile işaretli alanlar zorunludur</p>
-    </footer>
-   </div>
-  </main>
-  
-  <script>
-    // Floating particles animation
-    function createParticles() {
-      const container = document.getElementById('particles');
-      const colors = ['#ff0080', '#ff8c00', '#40e0d0', '#9d50bb', '#5865F2'];
-      
-      for (let i = 0; i < 20; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.width = Math.random() * 10 + 5 + 'px';
-        particle.style.height = particle.style.width;
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.top = Math.random() * 100 + '%';
-        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-        particle.style.animationDelay = Math.random() * 10 + 's';
-        particle.style.animationDuration = Math.random() * 10 + 15 + 's';
-        container.appendChild(particle);
-      }
-    }
-    
-    // SDK ve Tema İle İlgili Tüm Gereksiz Fonksiyonlar SİLİNDİ
-    
-    // --- TEMİZLENMİŞ FORM GÖNDERİM FONKSİYONU ---
-    document.getElementById('application-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const submitBtn = document.getElementById('submit-btn');
-      const submitBtnText = document.getElementById('submit-btn-text');
-      const successMessage = document.getElementById('success-message');
-      
-      // Hata mesajını temizle (varsa)
-      const existingError = document.querySelector('.form-section + .mb-6.p-4.rounded-xl.glass-card.border-2.border-red-400');
-      if (existingError) existingError.remove();
-
-      submitBtn.disabled = true;
-      submitBtnText.textContent = 'Gönderiliyor...';
-
-      // Form verilerini topla (Input name/id'leri kullanılıyor)
-      const formData = {
-        ad: document.getElementById('ad').value,
-        yas: document.getElementById('yas').value,
-        eposta: document.getElementById('eposta').value,
-        minecraft_deneyim: document.getElementById('minecraft-deneyim').value,
-        kodlama_bilgisi: document.getElementById('kodlama-bilgisi').value,
-        onceki_sunucular: document.getElementById('onceki-sunucular').value,
-        aktif_sunucu: document.getElementById('aktif-sunucu').value,
-        proje_ornekleri: document.getElementById('proje-ornekleri').value,
-        aktif_gunler: document.getElementById('aktif-gunler').value,
-        neden_iyi_developer: document.getElementById('neden-iyi-developer').value,
-        basvuru_tarihi: new Date().toISOString()
-      };
-
-      let webhookSent = false;
-      
-      // Veriyi kendi Node.js sunucumuzdaki /send-webhook rotasına gönder
-      try {
-        const response = await fetch('http://localhost:3000/send-webhook', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
-
-        const data = await response.json();
-        
-        if (data.success) {
-          webhookSent = true;
-        } else {
-          console.error("Sunucudan Hata Mesajı:", data.message);
-        }
-
-      } catch (error) {
-        console.error("Fetch Hatası (Sunucuya ulaşılamadı):", error);
-      }
-      
-      // Başarı veya Hata Mesajını Göster
-      if (webhookSent) {
-        successMessage.classList.remove('hidden');
-        document.getElementById('application-form').reset();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        
-        setTimeout(() => {
-          successMessage.classList.add('hidden');
-        }, 5000);
-      } else {
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'mb-6 p-4 rounded-xl glass-card border-2 border-red-400 success-popup';
-        errorDiv.innerHTML = '<p class="text-center font-semibold text-red-300 flex items-center justify-center gap-2"><span class="text-2xl">❌</span> Başvuru gönderilirken hata oluştu. Lütfen konsolu kontrol edin.</p>';
-        successMessage.parentNode.insertBefore(errorDiv, successMessage.nextSibling);
-        
-        setTimeout(() => {
-          errorDiv.remove();
-        }, 7000);
-      }
-
-      submitBtn.disabled = false;
-      submitBtnText.textContent = 'Başvurumu Gönder';
-    });
-
-    createParticles();
-    // initializeSdks() çağrısı kaldırıldı
-  </script>
-  </body>
->>>>>>> 56c941fbb7711d2e61232a8c344003fe1b20766f
 </html>
